@@ -35,6 +35,10 @@ export async function getInitialState(): Promise<{
       const msg = await queryCurrentUser();
       return msg.data;
     } catch (error) {
+      // 添加一个白名单
+      if (!['/user/login','/user/register'].includes(history.location.pathname)){
+        history.push(loginPath);
+      }
       history.push(loginPath);
     }
     return undefined;
@@ -60,13 +64,17 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     waterMarkProps: {
-      content: initialState?.currentUser?.name,
+      content: initialState?.currentUser?.username,
     },
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
+      // 添加白名单，登录页面和注册页面不需要强制路由
+      if (location.pathname === "/user/register" || location.pathname === "/user/login"){
+        return;
+      }
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      if (!initialState?.currentUser) {
         history.push(loginPath);
       }
     },

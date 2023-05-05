@@ -10,7 +10,7 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { Alert, message, Tabs } from 'antd';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import { history, useModel } from 'umi';
 import styles from './index.less';
 import {SYSTEM_LOGO} from "@/constant";
@@ -42,11 +42,8 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      const msg = await login({
-        ...values,
-        type,
-      });
-      if (msg.status === 'ok') {
+      const user = await login({...values, type,});
+      if (user) {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
@@ -59,9 +56,9 @@ const Login: React.FC = () => {
         history.push(redirect || '/');
         return;
       }
-      console.log(msg);
+      console.log(user);
       // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
+      setUserLoginState(user);
     } catch (error) {
       const defaultLoginFailureMessage = '登录失败，请重试！';
       message.error(defaultLoginFailureMessage);
@@ -135,11 +132,14 @@ const Login: React.FC = () => {
             <ProFormCheckbox noStyle name="autoLogin">
               自动登录
             </ProFormCheckbox>
-            <a
-              style={{
-                float: 'right',
-              }}
-              href={"https://blog.csdn.net/m0_55828678?spm=1000.2115.3001.5343"}
+            <span>  </span>
+            <a href={"/user/register"}>新用户注册</a>
+            <a style={{
+              float: 'right',
+            }}
+            href={"https://blog.csdn.net/m0_55828678?spm=1000.2115.3001.5343"}
+               target="_blank"
+               rel="noreferrer"
             >
               忘记密码请联系作者 ?
             </a>
