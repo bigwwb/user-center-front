@@ -3,6 +3,7 @@
 
 declare namespace API {
   type CurrentUser = {
+    url: any;
     id?: number;
     username?: string;
     userAccount?: string;
@@ -10,11 +11,10 @@ declare namespace API {
     gender?: number;
     phone?: string;
     email?: string;
+    planetCode?:string;
     userStatus?: number;
-    userRole?: number;
     createTime?: Date;
-    updateTime?: Date;
-    isDelete?: number;
+    userRole?: number;
   };
 
   type LoginResult = {
@@ -45,6 +45,16 @@ declare namespace API {
     progress?: number;
   };
 
+  /**
+   * 通用返回类
+   */
+  type BaseResponse<T> = {
+    code: number,
+    data: T,
+    message: string,
+    description: string,
+  }
+
   type RuleList = {
     data?: RuleListItem[];
     /** 列表的内容总数 */
@@ -68,6 +78,7 @@ declare namespace API {
     userAccount?: string;
     userPassword?: string;
     checkPassword?: string;
+    planetCode?:string;
     type?: string;
   };
 
@@ -101,7 +112,4 @@ declare namespace API {
     description?: string;
     type?: NoticeIconItemType;
   };
-
-  export interface RegisterParams {
-  }
 }

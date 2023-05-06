@@ -9,9 +9,9 @@ import {
   LoginForm,
   ProFormText,
 } from '@ant-design/pro-components';
-import { message, Tabs } from 'antd';
-import React, { useState } from 'react';
-import { history } from 'umi';
+import {message, Tabs} from 'antd';
+import React, {useState} from 'react';
+import {history} from 'umi';
 import styles from './index.less';
 import {SYSTEM_LOGO} from "@/constant";
 
@@ -19,38 +19,35 @@ const Register: React.FC = () => {
   const [type, setType] = useState<string>('account');
   //表单提交
   const handleSubmit = async (values: API.RegisterParams) => {
-    try {
-      // @ts-ignore
-      const { userPassword, checkPassword } = values
-      //简单校验
-      if (userPassword !== checkPassword){
-        const defaultLoginFailureMessage = '两次密码输入不一致，请重新输入';
-        message.error(defaultLoginFailureMessage);
-        return;
-      }
-      //注册
-      const userId = await register(values);
+    const {userPassword, checkPassword} = values;
+    // 校验
+    if (userPassword !== checkPassword) {
+      message.error('两次输入的密码不一致');
+      return;
+    }
 
-      if (userId > 0){
-        const defaultLoginFailureMessage = '注册成功';
-        message.success(defaultLoginFailureMessage);
+    try {
+      // 注册
+      const id = await register(values);
+      if (id) {
+        const defaultLoginSuccessMessage = '注册成功！';
+        message.success(defaultLoginSuccessMessage);
 
         /** 此方法会跳转到 redirect 参数所在的位置 */
-        if(!history) return;
-        const { query } = history.location;
-        const { redirect } = query as {
-          redirect: string;
-        };
-
-        history.push("/user/login?redirect=" + redirect);
+        if (!history) return;
+        const {query} = history.location;
+        history.push({
+          pathname: '/user/login',
+          query,
+        });
         return;
       }
-      throw new Error(`redirect is fail, Id is ${userId}`)
-    }catch (error){
-      const defaultLoginFailureMessage = '注册失败，请重试';
+    } catch (error: any) {
+      const defaultLoginFailureMessage = '注册失败，请重试！';
       message.error(defaultLoginFailureMessage);
     }
   };
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -61,7 +58,7 @@ const Register: React.FC = () => {
             }
           }
           }
-          logo={<img alt="logo" src={SYSTEM_LOGO} />}
+          logo={<img alt="logo" src={SYSTEM_LOGO}/>}
           title="快乐星球"
           subTitle={'什么是快乐星球，什么是快乐星球！'}
           initialValues={{
@@ -72,7 +69,7 @@ const Register: React.FC = () => {
           }}
         >
           <Tabs activeKey={type} onChange={setType}>
-            <Tabs.TabPane key="account" tab={'账号密码注冊'} />
+            <Tabs.TabPane key="account" tab={'账号密码注冊'}/>
           </Tabs>
           {type === 'account' && (
             <>
@@ -80,7 +77,7 @@ const Register: React.FC = () => {
                 name="userAccount"
                 fieldProps={{
                   size: 'large',
-                  prefix: <UserOutlined className={styles.prefixIcon} />,
+                  prefix: <UserOutlined className={styles.prefixIcon}/>,
                 }}
                 placeholder="请输入账号"
                 rules={[
@@ -94,7 +91,7 @@ const Register: React.FC = () => {
                 name="userPassword"
                 fieldProps={{
                   size: 'large',
-                  prefix: <LockOutlined className={styles.prefixIcon} />,
+                  prefix: <LockOutlined className={styles.prefixIcon}/>,
                 }}
                 placeholder="请输入密码"
                 rules={[
@@ -112,7 +109,7 @@ const Register: React.FC = () => {
                 name="checkPassword"
                 fieldProps={{
                   size: 'large',
-                  prefix: <LockOutlined className={styles.prefixIcon} />,
+                  prefix: <LockOutlined className={styles.prefixIcon}/>,
                 }}
                 placeholder="请再次输入密码"
                 rules={[
@@ -126,11 +123,25 @@ const Register: React.FC = () => {
                   }
                 ]}
               />
+              <ProFormText
+                name="planetCode"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <UserOutlined className={styles.prefixIcon}/>,
+                }}
+                placeholder="请输入星球编号"
+                rules={[
+                  {
+                    required: true,
+                    message: '星球编号是必填项！',
+                  },
+                ]}
+              />
             </>
           )}
         </LoginForm>
       </div>
-      <Footer />
+      <Footer/>
     </div>
   );
 };
